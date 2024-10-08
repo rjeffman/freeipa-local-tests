@@ -1,7 +1,7 @@
 ---
 podman:
     strategy: abort
-    pubkey: ~/.ssh/idm-ci-id_rsa
+    pubkey: ~/.ssh/id_rsa
     default_network: local-freeipa-test
     images:
       default: fedora-freeipa:40
