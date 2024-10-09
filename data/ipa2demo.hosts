@@ -6,7 +6,7 @@ client2.ipa2demo.test
 
 [ipacluster:children]
 ipaserver
-ipaclients
+# ipaclients
 
 [ipacluster:vars]
 ipaadmin_password=Secret123
