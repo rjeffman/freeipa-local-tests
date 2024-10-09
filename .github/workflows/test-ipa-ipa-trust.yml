@@ -1,0 +1,76 @@
+name: test-ipa-ipa-trust
+run-name: Test IPA-IPA trust
+on: [push]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Build test image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: fedora-freeipa
+          tags: 40
+          containerfiles: Containerfile.build.fedora
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install libkrb5-dev libvirt-dev
+          sudo apt install software-properties-common
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install ansible podman
+
+      - name: Setup mrack
+        run: |
+          python3 -m venv venv
+          cd venv
+          source bin/activate
+          pip3 install git+https://github.com/abbra/mrack@podman-freeipa
+
+      - name: Clone ansible-freeipa
+        uses: actions/checkout@v4
+        with:
+          repository: freeipa/ansible-freeipa.git
+          ref: master
+          path: venv/af
+          fetch-depth: 1
+
+      - name: Generate containers
+        working-directory: venv
+        run: |
+          cp -r ../data .
+          data/run-mrack
+          # sudo -D $(pwd) data/run-mrack
+
+      - name: Install ipa1demo.test environment
+        working-directory: venv
+        run: |
+          # sudo -D $(pwd) 
+          env ANSIBLE_CONFIG=$(pwd)/data/ansible.cfg \
+          ansible-playbook -i data/mrack-inventory.yaml \
+                           -i data/ipa1demo.hosts \
+                           -c podman \
+                           af/playbooks/install-cluster.yml
+
+      - name: Install ipa2demo.test environment
+        working-directory: venv
+        run: |
+          # sudo -D $(pwd) 
+          env ANSIBLE_CONFIG=$(pwd)/data/ansible.cfg \
+          ansible-playbook -i data/mrack-inventory.yaml \
+                           -i data/ipa2demo.hosts \
+                           -c podman \
+                           af/playbooks/install-cluster.yml
+
+      - name: Install ipa1demo.test environment
+        working-directory: venv
+        run: |
+          # sudo -D $(pwd) 
+          env ANSIBLE_CONFIG=$(pwd)/data/ansible.cfg \
+          sudo ansible-playbook -i data/mrack-inventory.yaml \
+                           -c podman \
+                           data/establish-trust.yaml
+

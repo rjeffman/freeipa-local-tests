@@ -11,6 +11,7 @@ podman:
 
     podman_options:
         "--security-opt": "seccomp=./seccomp.json"
+        "--log-level": "debug"
 
 users:
     default: cloud-user
