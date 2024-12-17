@@ -40,6 +40,7 @@ jobs:
         run: |
           source bin/activate
           cd ipalab-config
+          sed -i 's/become: .*$/become: false/' idm2idm-trust/playbooks/install-cluster.yml
           ansible-playbook -i idm2idm-trust/inventory.yml idm2idm-trust/playbooks/install-cluster.yml
 
       - name: Establish trust between IPA deployments
