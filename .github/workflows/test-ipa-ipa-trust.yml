@@ -10,11 +10,17 @@ jobs:
           sudo apt update
           sudo apt-get install libkrb5-dev libvirt-dev
           sudo apt install software-properties-common
-          sudo add-apt-repository --yes --update ppa:ansible/ansible
           sudo apt install ansible podman
 
       - name: Clone the repository
         uses: actions/checkout@v4
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: containerfile-fedora
+          tags: 40
+          containerfiles: ipalab-config/containerfile-fedora
 
       - name: Setup ipalab config
         run: |
