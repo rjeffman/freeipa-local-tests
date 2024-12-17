@@ -5,16 +5,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Clone the repository
-        uses: actions/checkout@v4
-
-      - name: Build test image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: fedora-freeipa
-          tags: 40
-          containerfiles: Containerfile.build.fedora
-
       - name: Install dependencies
         run: |
           sudo apt update
@@ -23,54 +13,39 @@ jobs:
           sudo add-apt-repository --yes --update ppa:ansible/ansible
           sudo apt install ansible podman
 
-      - name: Setup mrack
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Setup ipalab config
         run: |
           python3 -m venv venv
           cd venv
           source bin/activate
-          pip3 install git+https://github.com/abbra/mrack@podman-freeipa
-
-      - name: Clone ansible-freeipa
-        uses: actions/checkout@v4
-        with:
-          repository: freeipa/ansible-freeipa.git
-          ref: master
-          path: venv/af
-          fetch-depth: 1
+          cp -r ../ipalab-config .
+          cd ipalab-config
+          pip3 install -r requirements.txt
+          pip3 install podman-compose
 
       - name: Generate containers
         working-directory: venv
         run: |
-          cp -r ../data .
-          data/run-mrack
-          # sudo -D $(pwd) data/run-mrack
+          source bin/activate
+          cd ipalab-config
+          ipalab-config -f containerfile-fedora ipalab-idmtoidm-trust.yaml
+          podman-compose -f idm2idm-trust/compose.yml up -d --build
+          ansible-galaxy collection install -r idm2idm-trust/requirements.yml
 
-      - name: Install ipa1demo.test environment
+      - name: Create IPA deployments
         working-directory: venv
         run: |
-          # sudo -D $(pwd) 
-          env ANSIBLE_CONFIG=$(pwd)/data/ansible.cfg \
-          ansible-playbook -i data/mrack-inventory.yaml \
-                           -i data/ipa1demo.hosts \
-                           -c podman \
-                           af/playbooks/install-cluster.yml
+          source bin/activate
+          cd ipalab-config
+          ansible-playbook -i idm2idm-trust/inventory.yml idm2idm-trust/playbooks/install-cluster.yml
 
-      - name: Install ipa2demo.test environment
+      - name: Establish trust between IPA deployments
         working-directory: venv
         run: |
-          # sudo -D $(pwd) 
-          env ANSIBLE_CONFIG=$(pwd)/data/ansible.cfg \
-          ansible-playbook -i data/mrack-inventory.yaml \
-                           -i data/ipa2demo.hosts \
-                           -c podman \
-                           af/playbooks/install-cluster.yml
-
-      - name: Install ipa1demo.test environment
-        working-directory: venv
-        run: |
-          # sudo -D $(pwd) 
-          env ANSIBLE_CONFIG=$(pwd)/data/ansible.cfg \
-          sudo ansible-playbook -i data/mrack-inventory.yaml \
-                           -c podman \
-                           data/establish-trust.yaml
-
+          source bin/activate
+          cd ipalab-config
+          ansible-galaxy collection install ansible.posix
+          ansible-playbook -i idm2idm-trust/inventory.yml establish-trust.yaml
