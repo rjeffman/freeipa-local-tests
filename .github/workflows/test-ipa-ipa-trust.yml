@@ -19,7 +19,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: containerfile-fedora
-          tags: 40
+          tags: latest
           containerfiles: ipalab-config/containerfile-fedora
 
       - name: Setup ipalab config
@@ -38,7 +38,7 @@ jobs:
           source bin/activate
           cd ipalab-config
           ipalab-config -f containerfile-fedora ipalab-idmtoidm-trust.yaml
-          podman-compose -f idm2idm-trust/compose.yml up -d --build
+          podman-compose -f idm2idm-trust/compose.yml up -d
           ansible-galaxy collection install -r idm2idm-trust/requirements.yml
 
       - name: Create IPA deployments
