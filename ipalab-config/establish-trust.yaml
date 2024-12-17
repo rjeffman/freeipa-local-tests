@@ -77,27 +77,27 @@
 
 
         # --- use freeipa -------------------------------------------
-        - name: Estabilish trust
-          # This requires a modified ansible-freeipa version,
-          # as 'ipa' is not supported in ipatrust
-          freeipa.ansible_freeipa.ipatrust:
-            realm: "{{ domain_info.cn }}"
-            admin: "admin@{{ domain_info.cn | upper }}"
-            password: "{{ hostvars[m2_server].ipaadmin_password }}"
-            two_way: true
-            range_type: ipa-ad-trust-posix
-            trust_type: "ipa"
-            state: present
+        # - name: Estabilish trust
+        #  # This requires a modified ansible-freeipa version,
+        #  # as 'ipa' is not supported in ipatrust
+        #  freeipa.ansible_freeipa.ipatrust:
+        #    realm: "{{ domain_info.cn }}"
+        #    admin: "admin@{{ domain_info.cn | upper }}"
+        #    password: "{{ hostvars[m2_server].ipaadmin_password }}"
+        #    two_way: true
+        #    range_type: ipa-ad-trust-posix
+        #    trust_type: "ipa"
+        #    state: present
         # -----------------------------------------------------------
 
-        # - name: Establish trust
-        #   ansible.builtin.shell: |
-        #     echo "{{ hostvars[m1_server].ipaadmin_password }}" | kinit admin
-        #     echo "{{ hostvars[m2_server].ipaadmin_password }}" | \
-        #     ipa trust-add --type=ipa "{{ domain_info.cn }}" \
-        #                   --admin "admin@{{ domain_info.cn | upper }}" \
-        #                   --password --two-way=true \
-        #                   --range-type=ipa-ad-trust-posix
+        - name: Establish trust
+          ansible.builtin.shell: |
+            echo "{{ hostvars[m1_server].ipaadmin_password }}" | kinit admin
+            echo "{{ hostvars[m2_server].ipaadmin_password }}" | \
+            ipa trust-add --type=ipa "{{ domain_info.cn }}" \
+                          --admin "admin@{{ domain_info.cn | upper }}" \
+                          --password --two-way=true \
+                          --range-type=ipa-ad-trust-posix
 
         - name: clean up and SSSD
           ansible.builtin.shell: |
@@ -117,26 +117,26 @@
               - ip_address: "{{ domain_info.arecord }}"
 
         # --- use freeipa -------------------------------------------
-        - name: Estabilish trust
-          # This requires a modified ansible-freeipa version, as 'ipa' is not supported in ipatrust
-          freeipa.ansible_freeipa.ipatrust:
-            realm: "{{ domain_info.cn }}"
-            admin: "admin@{{ domain_info.cn | upper }}"
-            password: "{{ hostvars[m1_server].ipaadmin_password }}"
-            two_way: true
-            range_type: ipa-ad-trust-posix
-            trust_type: "ipa"
-            state: present
+        # - name: Estabilish trust
+        #   # This requires a modified ansible-freeipa version, as 'ipa' is not supported in ipatrust
+        #   freeipa.ansible_freeipa.ipatrust:
+        #     realm: "{{ domain_info.cn }}"
+        #     admin: "admin@{{ domain_info.cn | upper }}"
+        #     password: "{{ hostvars[m1_server].ipaadmin_password }}"
+        #     two_way: true
+        #     range_type: ipa-ad-trust-posix
+        #     trust_type: "ipa"
+        #     state: present
         # -----------------------------------------------------------
 
-        # - name: Establish trust
-        #   ansible.builtin.shell: |
-        #     echo "{{ hostvars[m2_server].ipaadmin_password }}" | kinit admin
-        #     echo "{{ hostvars[m1_server].ipaadmin_password }}" | \
-        #     ipa trust-add --type=ipa "{{ domain_info.cn }}" \
-        #                   --admin "admin@{{ domain_info.cn | upper }}" \
-        #                   --password --two-way=true \
-        #                   --range-type=ipa-ad-trust-posix
+        - name: Establish trust
+          ansible.builtin.shell: |
+            echo "{{ hostvars[m2_server].ipaadmin_password }}" | kinit admin
+            echo "{{ hostvars[m1_server].ipaadmin_password }}" | \
+            ipa trust-add --type=ipa "{{ domain_info.cn }}" \
+                          --admin "admin@{{ domain_info.cn | upper }}" \
+                          --password --two-way=true \
+                          --range-type=ipa-ad-trust-posix
 
         - name: clean up and restart SSSD on IPA1DEMO side
           ansible.builtin.shell: |
