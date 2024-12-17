@@ -5,6 +5,14 @@ jobs:
   build-and-test:
     runs-on: ubuntu-24.04
     steps:
+      - name: Debug environment
+        run: |
+          id
+          cat /proc/$$/subuid_map ||:
+          cat /proc/$$/subgid_map ||:
+          cat /etc/subuid ||:
+          cat /etc/subgid ||:
+
       - name: Install dependencies
         run: |
           sudo apt update
