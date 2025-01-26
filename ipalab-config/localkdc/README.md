@@ -212,4 +212,21 @@ An authentication in this case will use Kerberos mechanism but will require
 password to proxy the request to the local KDC on Samba server side over the
 SMB3 connection.
 
+## Recording video of the demo operations
 
+The lab also includes a tape to record a video. Ansible playbook
+`playbooks/record-demo.yaml` can be run to perform this operation.
+
+Video recording is built upon excellent
+[VHS](https://github.com/charmbracelet/vhs) tool. A pre-built version for
+Fedora is provided in [COPR
+abbra/vhs](https://copr.fedorainfracloud.org/coprs/abbra/vhs/). This build also
+includes a fix from the upstream
+[PR#551](https://github.com/charmbracelet/vhs/pull/551).
+
+```
+[in the generated localkdc directory]
+$ ansible-playbook -i inventory.yml playbooks/record-demo.yaml
+```
+
+Resulting video is then fetched to `playbooks/results/localkdc-demo.webm`.
