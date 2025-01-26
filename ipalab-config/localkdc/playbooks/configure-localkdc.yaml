@@ -4,6 +4,10 @@
   become: false
   gather_facts: true
 
+  vars:
+    ab_realm: AB.LOCALKDC.SITE
+    asn_realm: ASN.LOCALKDC.SITE
+
   tasks:
     - name: Generate realm name based on the host name
       ansible.builtin.set_fact:
@@ -95,4 +99,9 @@
     - name: Add local KDC credentials for user 'testuser'
       ansible.builtin.shell: |
         /usr/sbin/localkdc-kadmin addprinc -pw Secret123 testuser
+
+    - name: Add local KDC cross-realm trust between machines
+      ansible.builtin.shell: |
+        /usr/sbin/localkdc-kadmin addprinc -pw Secret123 krbtgt/{{ ab_realm }}@{{ asn_realm }}
+        /usr/sbin/localkdc-kadmin addprinc -pw Secret123 krbtgt/{{ asn_realm }}@{{ ab_realm }}
 
