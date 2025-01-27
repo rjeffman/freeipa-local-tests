@@ -1,2 +1,2 @@
-git+https://github.com/abbra/ipalab-config.git@extra-data
+ipalab-config>=0.9.0
 ansible-core
