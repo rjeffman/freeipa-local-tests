@@ -54,9 +54,10 @@ jobs:
       - name: Generate containers
         run: |
           source venv/bin/activate
-          ipalab-config -f ipalab-config/ipa-trust/containerfile-fedora \
-                        -p ipalab-config/ipa-trust/playbooks \
-                        ipalab-config/ipa-trust/ipalab-idmtoidm-trust.yaml
+          pushd ipalab-config/ipa-trust
+          ipalab-config ipalab-idmtoidm-trust.yaml
+          mv ./idm2idm-trust ../..
+          popd
           cd ./idm2idm-trust
           podman-compose -f compose.yml up -d
           ansible-galaxy collection install \
