@@ -5,6 +5,8 @@ lab_name: idm2idm-trust
 container_fqdn: true
 containerfiles:
   - containerfile-fedora
+extra_data:
+  - playbooks
 ipa_deployments:
   - name: t1
     domain: ipa1demo.test
@@ -23,6 +25,8 @@ ipa_deployments:
             ipaserver_idmax: 62000
             ipaserver_rid_base: 63000
             ipaserver_secondary_rid_base: 70000
+            ipaserver_install_packages: no
+            ipaclient_mkhomedir: yes
       # clients:
       #   - name: c1
   - name: t2
@@ -42,6 +46,8 @@ ipa_deployments:
             ipaserver_idmax: 63000
             ipaserver_rid_base: 63000
             ipaserver_secondary_rid_base: 70000
+            ipaserver_install_packages: no
+            ipaclient_mkhomedir: yes
       # clients:
       #   - name: c2
 ...
