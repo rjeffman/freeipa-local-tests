@@ -5,6 +5,8 @@ lab_name: ipalab-migration
 container_fqdn: true
 containerfiles:
   - containerfile-fedora
+extra_data:
+  - playbooks
 ipa_deployments:
   - name: origin
     domain: origin.test
