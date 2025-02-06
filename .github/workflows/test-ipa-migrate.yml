@@ -54,9 +54,10 @@ jobs:
       - name: Generate containers
         run: |
           source venv/bin/activate
-          ipalab-config -f ipalab-config/ipa-migrate/containerfile-fedora \
-                        -p ipalab-config/ipa-migrate/playbooks \
-                        ipalab-config/ipa-migrate/ipalab-migration.yaml
+          pushd ipalab-config/ipa-migrate
+          ipalab-config ipalab-migration.yaml
+          mv ./ipalab-migration ../..
+          popd
           cd ./ipalab-migration
           podman-compose -f compose.yml up -d
           ansible-galaxy collection install \
