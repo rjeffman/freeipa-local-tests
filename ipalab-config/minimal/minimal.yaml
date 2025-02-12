@@ -17,6 +17,7 @@ ipa_deployments:
     cluster:
       servers:
         - name: dc
+          nolog: true
           capabilities:
             - DNS
             - AD
@@ -30,7 +31,7 @@ ipa_deployments:
             ipaclient_mkhomedir: yes
       clients:
         - name: client
+          nolog: true
           vars:
             ipaclient_install_packages: no
             ipaclient_mkhomedir: yes
-            
