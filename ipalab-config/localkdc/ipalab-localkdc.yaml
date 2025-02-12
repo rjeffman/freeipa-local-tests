@@ -13,8 +13,10 @@ ipa_deployments:
   - name: localkdcs
     domain: localkdc.test
     cluster:
-      clients: 
+      clients:
         - name: ab
+          nolog: true
           distro: fedora-localkdc
         - name: asn
+          nolog: true
           distro: fedora-localkdc

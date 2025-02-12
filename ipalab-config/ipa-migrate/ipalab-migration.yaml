@@ -16,6 +16,7 @@ ipa_deployments:
     cluster:
       servers:
         - name: m1
+          nolog: true
           capabilities:
             - DNS
             - AD
@@ -35,6 +36,7 @@ ipa_deployments:
     cluster:
       servers:
         - name: m2
+          nolog: true
           capabilities:
             - DNS
             - AD
