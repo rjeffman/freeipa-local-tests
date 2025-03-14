@@ -26,7 +26,7 @@ jobs:
           containerfiles: ipalab-config/ipa-trust/containerfile-fedora
 
       - name: Run tests using action
-        uses: rjeffman/FreeIPA-Cluster-Test@v1.4.0
+        uses: rjeffman/FreeIPA-Cluster-Test@v1.5.0
         with:
           cluster_configuration: ipalab-config/ipa-trust/ipalab-idmtoidm-trust.yaml
           ansible_requirements: ipalab-config/ipa-trust/playbooks/requirements.yml
@@ -47,7 +47,7 @@ jobs:
           containerfiles: ipalab-config/minimal/Containerfile.minimal
 
       - name: Create environment and record a demo
-        uses: rjeffman/FreeIPA-Cluster-Test@v1.4.0
+        uses: rjeffman/FreeIPA-Cluster-Test@v1.5.0
         with:
           cluster_configuration: ipalab-config/minimal/minimal.yaml
 
