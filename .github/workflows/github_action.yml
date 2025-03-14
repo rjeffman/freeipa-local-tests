@@ -47,7 +47,7 @@ jobs:
           containerfiles: ipalab-config/minimal/Containerfile.minimal
 
       - name: Create environment and record a demo
-        uses: rjeffman/FreeIPA-Cluster-Test@v1.3.0
+        uses: rjeffman/FreeIPA-Cluster-Test@v1.4.0
         with:
           cluster_configuration: ipalab-config/minimal/minimal.yaml
 
